@@ -272,6 +272,9 @@ class KelDB(Node):
         self.hook = hook
         self.cache_enabled = True
 
+    def __repr__(self):
+        return f"KelDB(hook='{self.hook}')"
+
     async def get_node_from_path(self, path: str) -> Node:
         """
         Get a reference to a node from a path.
