@@ -1,10 +1,23 @@
 
 # KelDB
-[![Latest PyPI package version](https://img.shields.io/pypi/v/keldb.svg)](https://pypi.org/project/keldb) [![Latest Read The Docs](https://readthedocs.org/projects/keldb/badge/?version=latest)](https://keldb.readthedocs.io/en/stable/)
+[![Latest PyPI package version](https://img.shields.io/pypi/v/keldb.svg)](https://pypi.org/project/keldb) [![Latest Read The Docs](https://readthedocs.org/projects/keldb/badge/?version=stable)](https://keldb.readthedocs.io/en/stable/)
 
 KelDB is a simple node-based database for asyncio applications.
-## Dynamics
+
 KelDB is organised into **nodes**. A node is a container that can hold a value and/or other **subnodes**. The database itself is the root node, and every piece of data is a subnode of it.
+
+## Installation
+Install from PyPi:
+
+    pip install keldb
+
+Or install from source
+
+    git clone https://github.com/TriangularDev/keldb.git
+    cd keldb
+    pip install -r requirements.txt
+    python3 -m pip install -U . --force-reinstall
+
 ## Usage
 KelDB is quite flexible. There's only a few commands to learn.
 
