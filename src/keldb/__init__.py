@@ -401,7 +401,7 @@ class KelDB(Node):
         target.write(json.dumps({}))
         target.write(b"\n")
 
-        async for subnode in self.list_subnodes(recursive=True):
+        async for subnode in self.list_subnodes(recursive=True, include_self=True):
             target.write(json.dumps(subnode.path))
             target.write(b"\n")
             target.write(json.dumps(await subnode.get_value()))
