@@ -19,9 +19,31 @@ import orjson as json
 import aiofiles
 import asyncio
 import pathlib
+import secrets
 import base64
 import shutil
 import os
+
+
+# =========================
+# Utility functions
+# =========================
+
+async def _readlines(target: IO[bytes]) -> AsyncIterator[bytes]:
+    while True:
+        buffer = target.read(65535)
+
+        if not buffer:
+            break
+
+        item = b""
+
+        for char in [buffer[i:i+1] for i in range(len(buffer))]:
+            if char == b"\n":
+                yield item
+                item = b""
+            else:
+                item += char
 
 
 # =========================
@@ -406,3 +428,44 @@ class KelDB(Node):
             target.write(b"\n")
             target.write(json.dumps(await subnode.get_value()))
             target.write(b"\n")
+    
+    async def load_database_dump(self, target: IO[bytes]) -> None:
+        """
+        Load a .keldb file into the current database.
+
+        Args:
+            target (IO[bytes]): Binary IO stream to load the database from
+        """
+
+        placeholder_value = None
+
+        version = placeholder_value
+        header = placeholder_value
+        path = placeholder_value
+        value = placeholder_value
+
+        async for line in _readlines(target):
+            data = json.loads(line)
+
+            if version is placeholder_value:
+                version = data
+
+                if version > 1:
+                    raise RuntimeError(f"This file is version {version}, while this version can only handle files up to 1.0.")
+
+                continue
+            if header is placeholder_value:
+                header = data
+                continue
+            if path is placeholder_value:
+                path = data
+                continue
+            if value is placeholder_value:
+                value = data
+
+                await (await self.get_node_from_path(path)).set_value(value)
+
+                path = placeholder_value
+                value = placeholder_value
+
+                continue

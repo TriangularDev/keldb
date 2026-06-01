@@ -2,10 +2,12 @@ from io import BytesIO
 import asyncio
 import keldb
 
-# Create a default KelDB database (or load an existing database)
+# Create a default KelDB database
 database = keldb.KelDB(keldb.MemoryStoreHook())
 
 async def main():
+    global database
+
     # Create subnodes (lazy creation - no actual subnodes are created yet)
     foo = await database.get_subnode("foo")
     bar = await database.get_subnode("bar")
@@ -41,7 +43,22 @@ async def main():
 
     buffer.seek(0)
 
-    print(buffer.read())
+    database_dump = buffer.read()
 
+    print(database_dump)
+
+    buffer.seek(0)
+
+    database = keldb.KelDB(keldb.MemoryStoreHook())
+
+    await database.load_database_dump(buffer)
+
+    buffer = BytesIO()
+
+    await database.dump_database(buffer)
+
+    buffer.seek(0)
+
+    print(buffer.read() == database_dump)
 
 asyncio.run(main())
