@@ -280,6 +280,6 @@ class KelDB(Node):
         node = self
 
         for node_name in (x for x in path.split("/") if x):
-            await node.get_subnode(node_name)
+            node = await node.get_subnode(node_name)
         
         return node
