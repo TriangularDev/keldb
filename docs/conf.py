@@ -1,3 +1,7 @@
+import os
+
+os.system("python3 -m build && pip install dist/*.whl --force-reinstall")
+
 project = "KelDB"
 
 extensions = [

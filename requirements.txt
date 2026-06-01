@@ -1,9 +1,5 @@
-aiofiles>=22.1.0
-orjson>=2.0.0
-
 sphinx>=8.0
 sphinx-rtd-theme
 myst-parser
-keldb
 build
 twine
