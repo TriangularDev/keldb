@@ -108,7 +108,12 @@ class Node:
             Node: Subnode reference.
         """
         if "/" in subnode_name:
-            raise ValueError("subnode_name cannot contain \"/\"")
+            node = self
+
+            for node_name in (x for x in subnode_name.split("/") if x):
+                node = await node.get_subnode(node_name)
+            
+            return node
 
         subnode = Node()
         subnode.root = self.root

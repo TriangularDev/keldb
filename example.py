@@ -26,6 +26,7 @@ async def main():
         print(subnode.path)
 
     print(await database.get_node_from_path("/this/can/be/any/path/"))
+    print(await bar.get_subnode("/this/can/be/any/path/"))
 
     await database.set_value("Even the database itself is technically a node!")
 
