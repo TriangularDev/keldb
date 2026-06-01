@@ -47,6 +47,9 @@ class Node:
         self.parent: Optional["Node"] = None
         self.name: Optional[str] = None
         self.path: Optional[str] = None
+    
+    def __repr__(self):
+        return f"Node(name='{self.name}', path={self.path})"
 
     async def get_value(self) -> Any:
         """

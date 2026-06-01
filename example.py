@@ -25,6 +25,8 @@ async def main():
     async for subnode in database.list_subnodes(): # Iterate over subnodes
         print(subnode.path)
 
+    print(await database.get_node_from_path("/this/can/be/any/path/"))
+
     await database.set_value("Even the database itself is technically a node!")
 
 asyncio.run(main())
