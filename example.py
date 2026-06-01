@@ -2,7 +2,7 @@ import asyncio
 import keldb
 
 # Create a default KelDB database (or load an existing database)
-database = keldb.KelDB(keldb.FileStoreHook("./testdb/"))
+database = keldb.KelDB(keldb.MemoryStoreHook())
 
 async def main():
     # Create subnodes (lazy creation - no actual subnodes are created yet)

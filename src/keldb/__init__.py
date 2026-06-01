@@ -177,6 +177,72 @@ class Hook:
 
 
 # =========================
+# Memory Store Hook
+# =========================
+
+
+class MemoryStoreHook:
+    """
+    Simple memory-backed storage implementation. (for testing)
+    """
+
+    def __init__(self):
+        self.lock = asyncio.Lock()
+        self.data = {"subnodes": {}, "exists": True}
+
+    def __repr__(self):
+        return "MemoryStoreHook()"
+
+    async def get_path_dict(self, path: str, create: bool = False) -> dict:
+        subnode = self.data
+
+        for subnode_name in (x for x in path.split("/") if x):
+            subnodes = subnode["subnodes"]
+            if not subnodes.get(subnode_name):
+                subnodes[subnode_name] = {"subnodes": {}, "exists": False}
+
+            subnode = subnodes.get(subnode_name)
+
+            if create:
+                subnode["exists"] = True
+
+        return subnode
+
+    async def get_path_value(self, path: str, cached: bool = False) -> Any:
+        async with self.lock:
+            subnode = await (self.get_path_dict(path))
+
+            return subnode.get("value")
+
+    async def set_path_value(self, path: str, value: Any, cached: bool = False) -> Any:
+        async with self.lock:
+            subnode = await (self.get_path_dict(path, create=True))
+
+            subnode["value"] = value
+
+    async def list_path_subpaths(
+        self, path: str, cached: bool = False
+    ) -> AsyncIterator[str]:
+        async with self.lock:
+            for subnode_name, subnode in (await self.get_path_dict(path))[
+                "subnodes"
+            ].items():
+                if subnode["exists"]:
+                    yield subnode_name
+
+    async def check_path_exists(self, path: str, cached: bool = False) -> bool:
+        return (await self.get_path_dict(path))["exists"]
+
+    async def delete_path(self, path: str, cached: bool = False) -> None:
+        path_tuple = tuple(x for x in path.split("/") if x)
+
+        async with self.lock:
+            (await self.get_path_dict("/".join(path_tuple[:-1])))["subnodes"].pop(
+                path_tuple[-1]
+            )
+
+
+# =========================
 # File Store Hook
 # =========================
 
