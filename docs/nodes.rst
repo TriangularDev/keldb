@@ -51,7 +51,7 @@ Reading Values
    data = await alice.get_value()
    print(data)
 
-Listing Children
+Listing Subnodes
 ----------------
 
 .. code-block:: python
