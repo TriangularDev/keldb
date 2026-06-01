@@ -1,33 +1,30 @@
-import secrets
 import asyncio
 import keldb
-import time
 
+# Create a default KelDB database (or load an existing database)
 database = keldb.KelDB(keldb.FileStoreHook("./testdb/"))
 
 async def main():
-    await database.set_value(f"Test {time.time()}")
+    # Create subnodes (lazy creation - no actual subnodes are created yet)
+    foo = await database.get_subnode("foo")
+    bar = await database.get_subnode("bar")
+    baz = await database.get_subnode("baz")
 
-    print(await database.get_value())
+    await bar.set_value("This can be any json-serializable object.") # Set a value (now "bar" is actually created)
+    
+    await baz.set_value({"type": "user", "name": "Gabe Newell"}) # Now "baz" is actually created
 
-    subnode = database
+    text_subnode = await foo.get_subnode("text")
 
-    for i in range(25):
-        print(await subnode.exists())
+    await text_subnode.set_value("If you are reading this, this data saved correctly!") # Write text in a subnode's subnode. (now both "foo" and "foo/text" are created)
 
-        await subnode.set_value(i)
+    print(await text_subnode.get_value()) # Read a value from the database
 
-        print(await subnode.exists())
+    await foo.delete() # Delete a subnode (do note that this also recursively deletes any subnodes under it)
 
-        subnode = await subnode.get_subnode(secrets.token_hex(1))
+    async for subnode in database.list_subnodes(): # Iterate over subnodes
+        print(subnode.path)
 
-    print(subnode.path)
-
-    time.sleep(10)
-
-    await database.delete()
-
-    async for subsubnode in database.list_subnodes():
-        print(subsubnode.path)
+    await database.set_value("Even the database itself is technically a node!")
 
 asyncio.run(main())
