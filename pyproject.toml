@@ -11,3 +11,7 @@ readme = "README.md"
 requires-python = ">=3.7"
 
 dependencies = ["aiofiles>=22.1.0", "orjson>=2.0.0"]
+
+[project.urls]
+source = "https://github.com/TriangularDev/keldb/"
+documentation = "https://keldb.readthedocs.io/en/stable/"
