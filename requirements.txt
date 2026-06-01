@@ -1,1 +1,5 @@
 aiofiles>=22.1.0
+
+sphinx>=8.0
+sphinx-rtd-theme
+myst-parser
