@@ -3,7 +3,7 @@ KelDB
 
 An asynchronous hierarchical key-value database abstraction.
 
-KelDB organizes data as a tree of nodes. Each node can store a value and have child nodes. Storage is delegated to a backend Hook.
+KelDB organizes data as a tree of nodes. Each node can store a value and have subnodes. Storage is delegated to a backend Hook.
 
 Core Components:
     - Node: Represents a node in the database tree.
@@ -95,13 +95,13 @@ class Node:
 
     async def get_subnode(self, subnode_name: str) -> "Node":
         """
-        Get a reference to a child node.
+        Get a reference to a subnode.
 
         Args:
             subnode_name (str): Name of subnode.
 
         Returns:
-            Node: Child node reference.
+            Node: Subnode reference.
         """
         subnode = Node()
         subnode.root = self.root
@@ -124,7 +124,7 @@ class Node:
 
     async def delete(self) -> None:
         """
-        Delete this node and all children.
+        Recursively delete this node and all subnodes.
         """
         if await self.exists():
             await self.root.hook.delete_path(
