@@ -10,4 +10,4 @@ authors = [{ name="TriangularDev", email="triangle@dylsplazy.com" }]
 readme = "README.md"
 requires-python = ">=3.7"
 
-dependencies = ["aiofiles>=22.1.0"]
+dependencies = ["aiofiles>=22.1.0", "orjson>=2.0.0"]

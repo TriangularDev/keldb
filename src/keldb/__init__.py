@@ -15,12 +15,12 @@ Core Components:
 from __future__ import annotations
 
 from typing import Any, AsyncIterator, Optional
+import orjson as json
 import aiofiles
 import asyncio
 import pathlib
 import base64
 import shutil
-import json
 import os
 
 
