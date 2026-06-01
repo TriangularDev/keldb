@@ -155,6 +155,9 @@ class Hook:
     Abstract storage backend interface.
     """
 
+    def __repr__(self):
+        return "Hook()"
+
     async def get_path_value(self, path: str, cached: bool = False) -> Any:
         raise NotImplementedError
 
@@ -188,6 +191,9 @@ class FileStoreHook(Hook):
     def __init__(self, dir: str) -> None:
         self.dir = pathlib.Path(dir).absolute()
         self.locks = [asyncio.Lock() for _ in range(100)]
+
+    def __repr__(self):
+        return f"FileStoreHook(dir='{self.dir}')"
 
     async def get_directory_lock(self, directory: str) -> asyncio.Lock:
         return self.locks[hash(directory) % len(self.locks)]
