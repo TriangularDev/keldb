@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "keldb"
+version = "0.1.0"
+description = "KelDB is a simple node-based database for asyncio applications."
+authors = [{ name="TriangularDev", email="triangle@dylsplazy.com" }]
+readme = "README.md"
+requires-python = ">=3.7"
+
+dependencies = ["aiofiles>=22.1.0"]
