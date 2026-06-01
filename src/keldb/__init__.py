@@ -49,7 +49,7 @@ class Node:
         self.path: Optional[str] = None
     
     def __repr__(self):
-        return f"Node(name='{self.name}', path={self.path})"
+        return f"Node(name='{self.name}', path='{self.path}')"
 
     async def get_value(self) -> Any:
         """
@@ -279,7 +279,7 @@ class KelDB(Node):
         self.cache_enabled = True
 
     def __repr__(self):
-        return f"KelDB(hook='{self.hook}')"
+        return f"KelDB(hook={self.hook})"
 
     async def get_node_from_path(self, path: str) -> Node:
         """
