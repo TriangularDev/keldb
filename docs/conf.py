@@ -1,6 +1,8 @@
 import os
 
+os.chdir('..')
 os.system("python3 -m build && pip install dist/*.whl --force-reinstall")
+os.chdir('docs')
 
 project = "KelDB"
 
