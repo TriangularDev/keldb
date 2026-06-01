@@ -47,7 +47,7 @@ class Node:
         self.parent: Optional["Node"] = None
         self.name: Optional[str] = None
         self.path: Optional[str] = None
-    
+
     def __repr__(self):
         return f"Node(name='{self.name}', path='{self.path}')"
 
@@ -112,7 +112,7 @@ class Node:
 
             for node_name in (x for x in subnode_name.split("/") if x):
                 node = await node.get_subnode(node_name)
-            
+
             return node
 
         subnode = Node()
@@ -295,5 +295,5 @@ class KelDB(Node):
 
         for node_name in (x for x in path.split("/") if x):
             node = await node.get_subnode(node_name)
-        
+
         return node
