@@ -14,7 +14,7 @@ Core Components:
 
 from __future__ import annotations
 
-from typing import Any, AsyncIterator, Optional
+from typing import Any, AsyncIterator, Optional, IO
 import orjson as json
 import aiofiles
 import asyncio
@@ -76,7 +76,9 @@ class Node:
             cached=self.root.cache_enabled,
         )
 
-    async def list_subnodes(self, recursive: bool=False, include_self: bool=False) -> AsyncIterator["Node"]:
+    async def list_subnodes(
+        self, recursive: bool = False, include_self: bool = False
+    ) -> AsyncIterator["Node"]:
         """
         Iterate over subnodes.
 
@@ -104,7 +106,7 @@ class Node:
             subnode.root = self.root
             subnode.parent = self
             subnode.name = subnode_name
-            subnode.path = self.path + f"{subnode_name}/"            
+            subnode.path = self.path + f"{subnode_name}/"
             yield subnode
 
             if recursive:
@@ -237,15 +239,19 @@ class MemoryStoreHook:
 
             subnode["value"] = value
 
-    async def list_path_subpaths(
-        self, path: str, cached: bool = False
-    ) -> AsyncIterator[str]:
+    async def list_path_subpaths(self, path: str, cached: bool = False) -> tuple[str]:
+
         async with self.lock:
-            for subnode_name, subnode in (await self.get_path_dict(path))[
-                "subnodes"
-            ].items():
-                if subnode["exists"]:
-                    yield subnode_name
+            full_list = (
+                subnode_name
+                for subnode_name, subnode in (await self.get_path_dict(path))[
+                    "subnodes"
+                ].items()
+                if subnode["exists"]
+            )
+
+        for subnode_name in full_list:
+            yield subnode_name
 
     async def check_path_exists(self, path: str, cached: bool = False) -> bool:
         return (await self.get_path_dict(path))["exists"]
@@ -271,7 +277,7 @@ class FileStoreHook(Hook):
     Each node is stored as a directory. The value is stored in value.json inside the directory.
     """
 
-    def __init__(self, dir: str, locks_count: int = 100) -> None:
+    def __init__(self, dir: str, locks_count: int = 10000) -> None:
         self.dir = pathlib.Path(dir).absolute()
         self.locks = [asyncio.Lock() for _ in range(locks_count)]
 
@@ -380,3 +386,23 @@ class KelDB(Node):
             node = await node.get_subnode(node_name)
 
         return node
+
+    async def dump_database(self, target: IO[bytes]) -> None:
+        """
+        Dump the database as a .keldb file.
+
+        Args:
+            target (IO[bytes]): Binary IO stream to write the database to.
+        """
+
+        target.write(json.dumps(1.0))
+        target.write(b"\n")
+
+        target.write(json.dumps({}))
+        target.write(b"\n")
+
+        async for subnode in self.list_subnodes(recursive=True):
+            target.write(json.dumps(subnode.path))
+            target.write(b"\n")
+            target.write(json.dumps(await subnode.get_value()))
+            target.write(b"\n")

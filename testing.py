@@ -1,3 +1,4 @@
+from io import BytesIO
 import asyncio
 import keldb
 
@@ -33,6 +34,14 @@ async def main():
 
     async for subnode in database.list_subnodes(recursive=True, include_self=True): # Iterate over subnodes
         print(subnode.path)
+
+    buffer = BytesIO()
+
+    await database.dump_database(buffer)
+
+    buffer.seek(0)
+
+    print(buffer.read())
 
 
 asyncio.run(main())
