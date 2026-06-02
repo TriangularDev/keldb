@@ -101,7 +101,7 @@ Using the node lock prevents this:
 Now only one task can execute the critical section at a time.
 
 Thread Safety and Hooks
------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 Node locks are **not** a replacement for KelDB's internal thread-safety guarantees.
 
