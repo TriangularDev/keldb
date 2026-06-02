@@ -61,4 +61,8 @@ async def main():
 
     print(buffer.read() == database_dump)
 
+    async with (await direct_reference.get_lock()):
+        print("I have gotten a lock!")
+        print(direct_reference.root.locks)
+
 asyncio.run(main())

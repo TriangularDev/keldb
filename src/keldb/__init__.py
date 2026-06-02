@@ -74,6 +74,9 @@ class Node:
     def __repr__(self):
         return f"Node(name='{self.name}', path='{self.path}')"
 
+    async def get_lock(self, area="generic") -> asyncio.Lock:
+        return await self.root._get_path_lock(self.path, area=area)
+
     async def get_value(self) -> Any:
         """
         Get the value of this node.
@@ -400,13 +403,17 @@ class KelDB(Node):
     Root database object.
     """
 
-    def __init__(self, hook: Hook) -> None:
+    def __init__(self, hook: Hook, locks_count:int=10000) -> None:
         self.root = self
         self.parent = None
         self.name = ""
         self.path = "/"
         self.hook = hook
         self.cache_enabled = True
+
+        self.locks = {}
+        self.locklock = asyncio.Lock()
+        self.locks_count = locks_count
 
     def __repr__(self):
         return f"KelDB(hook={self.hook})"
@@ -490,3 +497,22 @@ class KelDB(Node):
                 value = placeholder_value
 
                 continue
+    
+    async def _get_path_lock(self, directory: str, area: str="generic") -> asyncio.Lock:
+        async with self.locklock:
+            lock = self.locks.pop(f"_{area}{directory}", None)
+
+            if not lock:
+                lock = asyncio.Lock()
+
+            while len(self.locks) > self.locks_count:
+                lock_name = next(iter(self.locks.keys()))
+                
+                if self.locks[lock_name].locked():
+                    break
+
+                self.locks.pop(lock_name)  
+
+            self.locks[directory] = lock
+
+            return lock
