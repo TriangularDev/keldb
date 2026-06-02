@@ -45,6 +45,18 @@ Bad:
 
    await db.get_subnode("users_alice_v2_final")
 
+Beware of deadlocks
+-----------------------
+
+Do not attempt operations on the same node while iterating over its subnodes. It will result in a deadlock.
+
+Do not do this:
+
+.. code-block:: python
+
+   async for subnode in my_node.list_subnodes():
+      await my_node.set_value("Evil and intimidating deadlock!!")
+
 Back up your data!
 ----------------------
 
