@@ -112,3 +112,18 @@ Instead, node locks exist to help users coordinate their own higher-level applic
 Likewise, node locks should not be relied upon to make hooks thread-safe. Hook implementations must still be written to handle concurrent execution correctly according to the hook system's requirements.
 
 Node locks are entirely advisory. KelDB does not automatically enforce them, nor does it regulate database operations based on whether a node's lock is currently held. Any task may still read from or write to a node regardless of the lock state.
+
+Disabling hook locks
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you are **confident you can handle locks yourself**, you can disable hook locking to manage it manually.
+
+.. code-block:: python
+
+   from keldb.locking import DummyLockSystem
+
+   somehook.locksystem = DummyLockSystem()
+
+Note that this is **non-standard** usage and may introduce undocumented behaviors.
+
+Node locks will continue to work as normal.
