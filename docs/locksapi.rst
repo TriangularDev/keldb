@@ -1,4 +1,4 @@
-Api Reference
+KelDB Locks
 ============
 
 .. automodule:: keldb.locking

@@ -1,4 +1,4 @@
-Api Reference
+KelDB Hooks
 ============
 
 .. automodule:: keldb.hooks
