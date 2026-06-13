@@ -18,3 +18,5 @@ a tree of nodes with pluggable storage backends.
    :caption: API Reference
 
    api
+   hooksapi
+   locksapi
